@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #eef1f5;
+  --bg-soft: #f6f8fb;
+  --ink: #1c2530;
+  --ink-soft: #5b6675;
+  --line: rgba(28, 37, 48, 0.08);
+  --glass: rgba(255, 255, 255, 0.66);
+  --accent: #2f6df0;
+  --warm: #f0a341;
+  --hot: #ec5b54;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 800px at 70% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(160deg, #f3f5f9 0%, #e7ebf1 100%);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 40px -22px rgba(28, 37, 48, 0.45),
+    0 2px 8px -4px rgba(28, 37, 48, 0.2);
+}
+
+.mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* slider โทนขาว */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(28, 37, 48, 0.12);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(28, 37, 48, 0.18);
+  box-shadow: 0 2px 6px rgba(28, 37, 48, 0.25);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(28, 37, 48, 0.18);
+  box-shadow: 0 2px 6px rgba(28, 37, 48, 0.25);
+  cursor: pointer;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tracking-tightish {
+  letter-spacing: -0.01em;
+}
