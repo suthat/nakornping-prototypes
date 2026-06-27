@@ -78,6 +78,7 @@ export function MiniAppTile({
       <group position={[0, 1.55, 0.12]}>
         {app.icon === "shuttle" && <ShuttleIcon />}
         {app.icon === "tb-airborne" && <AirborneIcon />}
+        {app.icon === "wayfinding" && <WayfindingIcon />}
       </group>
 
       {/* ป้ายชื่อ — อยู่ใต้ฐาน ไม่ทับแผ่นข้างเคียง */}
@@ -149,6 +150,40 @@ function ShuttleIcon() {
         <mesh key={x} position={[x, -0.05, 0.46]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.2, 0.2, 0.1, 16]} />
           <meshStandardMaterial color="#334155" />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function WayfindingIcon() {
+  return (
+    <group scale={0.44}>
+      {/* หมุดปักหมุดนำทาง */}
+      <mesh position={[0, 0.45, 0]} castShadow>
+        <sphereGeometry args={[0.5, 20, 20]} />
+        <meshStandardMaterial
+          color="#fb923c"
+          emissive="#f97316"
+          emissiveIntensity={0.4}
+          metalness={0.2}
+          roughness={0.35}
+        />
+      </mesh>
+      <mesh position={[0, 0.05, 0]} rotation={[Math.PI, 0, 0]} castShadow>
+        <coneGeometry args={[0.34, 0.7, 20]} />
+        <meshStandardMaterial color="#fb923c" emissive="#f97316" emissiveIntensity={0.3} />
+      </mesh>
+      {/* รูตรงกลางหมุด */}
+      <mesh position={[0, 0.5, 0.42]}>
+        <circleGeometry args={[0.2, 16]} />
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.25} />
+      </mesh>
+      {/* รอยเส้นทาง */}
+      {[-0.7, -0.35, 0].map((z, i) => (
+        <mesh key={i} position={[-0.9, -0.55, z + 0.3]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.12, 12]} />
+          <meshStandardMaterial color="#38bdf8" emissive="#0ea5e9" emissiveIntensity={0.3} />
         </mesh>
       ))}
     </group>

@@ -1,4 +1,4 @@
-export type MiniAppIcon = "shuttle" | "tb-airborne";
+export type MiniAppIcon = "shuttle" | "tb-airborne" | "wayfinding";
 
 export interface MiniAppEntry {
   id: string;
@@ -26,6 +26,14 @@ export const MINI_APPS: MiniAppEntry[] = [
     href: "/tb-airborne",
     color: "#059669",
     icon: "tb-airborne",
+  },
+  {
+    id: "wayfinding",
+    title: "NKP Wayfinding",
+    description: "กระแสคน การหลงทาง และทางออกการนำทาง",
+    href: "/wayfinding",
+    color: "#e0732f",
+    icon: "wayfinding",
   },
 ];
 
