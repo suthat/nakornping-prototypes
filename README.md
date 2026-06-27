@@ -11,6 +11,7 @@ simulations can be added over time without changing the overall experience.
 |-----|-------|-------------|
 | **NKP Shuttle** | `/shuttle` | Shuttle bus simulation between the hospital and the outer parking lots, with a waiting-time algorithm |
 | **TB Airborne** | `/tb-airborne` | Airborne transmission simulation for the tuberculosis clinic |
+| **NKP Wayfinding** | `/wayfinding` | Hospital wayfinding simulation — human traffic flows, confusion hotspots, and nav solution comparison |
 
 > The list of available apps is registered in `src/lib/miniapps.ts`. The hub layout is
 > generated automatically from this registry, so adding a new entry surfaces it on the hub.
@@ -37,6 +38,30 @@ Based on mass-transit principles (`src/miniapps/shuttle/lib/simulation.ts`):
 - **Headway** `H` = cycle / number of buses → theoretical average waiting time ≈ `H/2`
 - **Capacity & overload** — when demand > capacity, the system saturates and queues and waiting times spike (with a "left-behind passengers" count)
 - Compares the **theoretical** values against the **empirical** values measured from the live simulation every frame
+
+## Featured: NKP Wayfinding
+
+A **top-down 3D simulation** of patient and visitor movement inside Nakornping Hospital,
+modelling three interacting systems:
+
+1. **Human traffic** — seven visitor archetypes (appointment patient, walk-in, emergency, caregiver, elder, staff, vendor), each with unique familiarity, literacy, walking speed, and digital capability. Arrivals follow a time-of-day demand curve with configurable peaks.
+2. **Confusion & getting lost** — agents make wrong-turn decisions at decision nodes based on signage quality, junction complexity, floor confusion, crowd blindness, and personal state (stress, fatigue, confusion). Lost trails are rendered in the scene and confusion hotspots are highlighted.
+3. **Navigation solutions** — seven interventions can be toggled and compared live:
+
+| Solution | Cost | Description |
+|----------|------|-------------|
+| Floor colour path | ★☆☆☆☆ | Coloured lines on the floor per department |
+| Landmark signs | ★★☆☆☆ | Signs anchored to visible landmarks (7-11, fountain, building colour) |
+| Point-to-point mini-map | ★☆☆☆☆ | Short-leg map with landmark callouts — cheapest intervention |
+| Volunteer guides | ★★☆☆☆ | Human-in-the-loop volunteers at decision junctions |
+| QR / Kiosk | ★★★★☆ | Digital turn-by-turn on the patient's phone via QR scan |
+| iBeacon + LINE | ★★★★☆ | Proactive push navigation via hospital LINE account + iBeacons |
+| Queue-aware routing | ★★★★★ | Reroutes agents around congested service nodes in real time |
+
+**Key metrics**: lost-now count, first-try navigation success rate, average detour distance, confusion cause breakdown (sequence / building / floor / department / signage), hotspot nodes, cost index vs. effectiveness score.
+
+`src/miniapps/wayfinding/lib/simulation.ts` — simulation engine
+`src/miniapps/wayfinding/lib/layout.ts` — hospital node graph & shortest-path
 
 ## Tech Stack
 
@@ -65,6 +90,7 @@ src/
   miniapps/
     shuttle/           # Shuttle simulation (lib + components)
     tb-airborne/       # TB airborne simulation (lib + components)
+    wayfinding/        # Wayfinding simulation (lib + components)
 ```
 
 Each mini app under `src/miniapps/<id>/` is self-contained, typically with:
