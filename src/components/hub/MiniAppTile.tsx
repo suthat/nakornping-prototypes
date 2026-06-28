@@ -1,8 +1,9 @@
 "use client";
 
 import { Html, RoundedBox } from "@react-three/drei";
+import type { ThreeEvent } from "@react-three/fiber";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { MiniAppEntry } from "@/lib/miniapps";
 
 export function MiniAppTile({
@@ -18,8 +19,43 @@ export function MiniAppTile({
   const lift = hovered ? 0.08 : 0;
   const glow = hovered ? 0.28 : 0.08;
 
+  const enterSim = () => router.push(app.href);
+
+  const setTileHovered = (next: boolean) => {
+    setHovered(next);
+    document.body.style.cursor = next ? "pointer" : "auto";
+  };
+
+  const tilePointerHandlers = useMemo(
+    () => ({
+      onPointerOver: (e: ThreeEvent<PointerEvent>) => {
+        e.stopPropagation();
+        setTileHovered(true);
+      },
+      onPointerOut: (e: ThreeEvent<PointerEvent>) => {
+        e.stopPropagation();
+        setTileHovered(false);
+      },
+      onPointerDown: (e: ThreeEvent<PointerEvent>) => {
+        // กัน OrbitControls แย่ง event ตอนกด — ลดอาการคลิกแล้วไม่ติด
+        e.stopPropagation();
+      },
+      onClick: (e: ThreeEvent<MouseEvent>) => {
+        e.stopPropagation();
+        enterSim();
+      },
+    }),
+    [router, app.href]
+  );
+
   return (
     <group position={[position[0], position[1] + lift, position[2]]}>
+      {/* hit area โปร่งใส — ครอบทั้งแผ่น/ไอคอน/ฐาน อยู่หน้าสุดเพื่อรับ ray ก่อน */}
+      <mesh position={[0, 1.35, 0.42]} {...tilePointerHandlers}>
+        <boxGeometry args={[2.85, 3.15, 0.08]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
       {/* ฐาน */}
       <RoundedBox
         args={[2.75, 0.2, 2.75]}
@@ -27,6 +63,7 @@ export function MiniAppTile({
         smoothness={4}
         position={[0, 0.1, 0]}
         receiveShadow
+        raycast={() => null}
       >
         <meshStandardMaterial color="#eef2f7" metalness={0.08} roughness={0.75} />
       </RoundedBox>
@@ -39,19 +76,7 @@ export function MiniAppTile({
         position={[0, 1.48, 0]}
         castShadow
         receiveShadow
-        onPointerOver={(e) => {
-          e.stopPropagation();
-          setHovered(true);
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={() => {
-          setHovered(false);
-          document.body.style.cursor = "auto";
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          router.push(app.href);
-        }}
+        raycast={() => null}
       >
         <meshStandardMaterial
           color={app.color}
@@ -63,7 +88,7 @@ export function MiniAppTile({
       </RoundedBox>
 
       {/* แถบ accent ด้านบน */}
-      <mesh position={[0, 2.78, 0.08]} castShadow>
+      <mesh position={[0, 2.78, 0.08]} castShadow raycast={() => null}>
         <boxGeometry args={[1.6, 0.08, 0.06]} />
         <meshStandardMaterial
           color="#ffffff"
@@ -75,21 +100,20 @@ export function MiniAppTile({
       </mesh>
 
       {/* ไอคอน */}
-      <group position={[0, 1.55, 0.12]}>
+      <group position={[0, 1.55, 0.12]} raycast={() => null}>
         {app.icon === "shuttle" && <ShuttleIcon />}
         {app.icon === "tb-airborne" && <AirborneIcon />}
         {app.icon === "wayfinding" && <WayfindingIcon />}
       </group>
 
-      {/* ป้ายชื่อ — อยู่ใต้ฐาน ไม่ทับแผ่นข้างเคียง */}
-      <Html
-        center
-        position={[0, -0.72, 0]}
-        distanceFactor={9}
-        style={{ pointerEvents: "none", userSelect: "none" }}
-      >
-        <div
-          className="w-[190px] rounded-2xl px-4 py-3 text-center transition-all duration-300"
+      {/* ป้ายชื่อ — คลิกได้ทั้งใบ (CTA ด้านล่างทำงานจริง) */}
+      <Html center position={[0, -0.72, 0]} distanceFactor={9}>
+        <button
+          type="button"
+          onClick={enterSim}
+          onPointerEnter={() => setTileHovered(true)}
+          onPointerLeave={() => setTileHovered(false)}
+          className="w-[190px] cursor-pointer rounded-2xl border-0 px-4 py-3 text-center transition-all duration-300"
           style={{
             background: hovered
               ? "rgba(255,255,255,0.92)"
@@ -112,18 +136,18 @@ export function MiniAppTile({
           <div className="mt-1 text-[11px] leading-snug text-[#5b6675]">
             {app.description}
           </div>
-          <div
+          <span
             className="mt-2.5 inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10.5px] font-semibold transition-opacity"
             style={{
-              background: `${app.color}18`,
-              color: app.color,
-              opacity: hovered ? 1 : 0.75,
+              background: hovered ? app.color : `${app.color}18`,
+              color: hovered ? "#ffffff" : app.color,
+              opacity: hovered ? 1 : 0.9,
             }}
           >
             เข้าจำลอง
             <span aria-hidden>→</span>
-          </div>
-        </div>
+          </span>
+        </button>
       </Html>
     </group>
   );
