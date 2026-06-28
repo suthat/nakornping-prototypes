@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
+import { LegalDocumentBody } from "@/components/hub/LegalDocumentBody";
 import {
   acceptLicense,
   hasAcceptedLicense,
@@ -61,35 +63,36 @@ export function LicenseGate({ children }: { children: ReactNode }) {
         </p>
 
         <div className="mt-4 min-h-0 flex-1 space-y-5 overflow-y-auto rounded-2xl border border-white/70 bg-white/45 px-4 py-4 sm:px-5">
-          {LICENSE_SECTIONS.map((section) => (
-            <section key={section.title}>
+          <LegalDocumentBody sections={LICENSE_SECTIONS}>
+            <section className="mt-5">
               <h2 className="text-[13px] font-semibold text-[#1c2530]">
-                {section.title}
+                ตัวอย่างการระบุที่มา
               </h2>
-              <ul className="mt-2 space-y-2">
-                {section.body.map((line) => (
-                  <li
-                    key={line}
-                    className="text-[12.5px] leading-relaxed text-[#5b6675]"
-                  >
-                    {line}
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-2 rounded-xl border border-[#2f6df0]/15 bg-[#2f6df0]/5 px-3 py-2.5 text-[11.5px] leading-relaxed text-[#3d4d61]">
+                “{LICENSE_ATTRIBUTION_EXAMPLE}”
+              </p>
             </section>
-          ))}
-
-          <section className="mt-5">
-            <h2 className="text-[13px] font-semibold text-[#1c2530]">
-              ตัวอย่างการระบุที่มา
-            </h2>
-            <p className="mt-2 rounded-xl border border-[#2f6df0]/15 bg-[#2f6df0]/5 px-3 py-2.5 text-[11.5px] leading-relaxed text-[#3d4d61]">
-              “{LICENSE_ATTRIBUTION_EXAMPLE}”
-            </p>
-          </section>
+          </LegalDocumentBody>
         </div>
 
-        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl px-1 py-1">
+        <p className="mt-4 text-center text-[11px] text-[#8893a3]">
+          อ่านฉบับเต็มได้ที่{" "}
+          <Link
+            href="/license"
+            className="font-medium text-[#5b6675] underline-offset-2 hover:text-[#2f6df0] hover:underline"
+          >
+            หน้าลิขสิทธิ์
+          </Link>{" "}
+          หรือ{" "}
+          <Link
+            href="/privacy"
+            className="font-medium text-[#5b6675] underline-offset-2 hover:text-[#2f6df0] hover:underline"
+          >
+            นโยบายความเป็นส่วนตัว
+          </Link>
+        </p>
+
+        <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl px-1 py-1">
           <input
             type="checkbox"
             checked={checked}

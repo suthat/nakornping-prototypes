@@ -1,5 +1,11 @@
 export const LICENSE_ACCEPTANCE_KEY = "nkp-sim-license-accepted-v1";
 
+export const COPYRIGHT_LINE =
+  "© 2026 โรงพยาบาลนครพิงค์ จังหวัดเชียงใหม่";
+
+export const LICENSE_INTRO =
+  "NKP Mini Simulation Projects จัดทำภายใต้โครงการ Leadership Bootcamp 4 (2026) โดย DO IN THAI Company Limited — สิทธิ์การใช้งานและพัฒนาต่อเป็นของโรงพยาบาลนครพิงค์";
+
 export const LICENSE_ATTRIBUTION_EXAMPLE =
   "อ้างอิงจาก NKP Mini Simulation Projects พัฒนาภายใต้โครงการ Leadership Bootcamp 4 (2026) — สิทธิ์การใช้งานและพัฒนาต่อเป็นของโรงพยาบาลนครพิงค์ จังหวัดเชียงใหม่ ริเริ่มโดย DO IN THAI Company Limited";
 
