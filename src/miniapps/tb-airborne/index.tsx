@@ -1,6 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import {
+  SCENE_LOADING_LABELS,
+  SceneLoadingOverlay,
+} from "@/components/scene/SceneLoadingOverlay";
 import { SimProvider } from "@/miniapps/tb-airborne/lib/SimProvider";
 import { Header } from "@/miniapps/tb-airborne/components/ui/Header";
 import { ConfigPanel } from "@/miniapps/tb-airborne/components/ui/ConfigPanel";
@@ -13,11 +17,7 @@ const Scene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="text-[13px] font-medium text-[#5b6675]">
-          กำลังโหลดฉากจำลอง 3 มิติ…
-        </div>
-      </div>
+      <SceneLoadingOverlay label={SCENE_LOADING_LABELS.simulation} />
     ),
   }
 );

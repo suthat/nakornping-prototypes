@@ -2,6 +2,10 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import {
+  SCENE_LOADING_LABELS,
+  SceneLoadingOverlay,
+} from "@/components/scene/SceneLoadingOverlay";
 import { MINI_APPS } from "@/lib/miniapps";
 
 const HubScene = dynamic(
@@ -9,11 +13,7 @@ const HubScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="text-[13px] font-medium text-[#5b6675]">
-          กำลังโหลดเมนู 3 มิติ…
-        </div>
-      </div>
+      <SceneLoadingOverlay label={SCENE_LOADING_LABELS.hub} />
     ),
   }
 );

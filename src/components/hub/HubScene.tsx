@@ -16,6 +16,12 @@ import {
   hubPlatformSize,
   layoutMiniApps,
 } from "@/lib/miniapps";
+import {
+  SCENE_LOADING_LABELS,
+  SceneLoadingOverlay,
+} from "@/components/scene/SceneLoadingOverlay";
+import { SceneReadyMarker } from "@/components/scene/SceneReadyMarker";
+import { useSceneReady } from "@/components/scene/useSceneReady";
 import { MiniAppTile } from "./MiniAppTile";
 
 function HubPlatform({ width, depth }: { width: number; depth: number }) {
@@ -97,38 +103,50 @@ function HubContent() {
 }
 
 export function HubScene() {
+  const { ready, onGlCreated, onSceneReady } = useSceneReady();
+
   return (
-    <Canvas
-      shadows
-      dpr={[1, 2]}
-      gl={{
-        antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.05,
-      }}
-      camera={{ position: [0, 3.8, 10.5], fov: 38, near: 0.1, far: 100 }}
-    >
-      <color attach="background" args={["#eef1f5"]} />
-      <fog attach="fog" args={["#eef1f5", 16, 32]} />
-
-      <PerspectiveCamera makeDefault position={[0, 3.8, 10.5]} fov={38} />
-
-      <Suspense fallback={null}>
-        <Environment preset="city" environmentIntensity={0.35} />
-        <HubContent />
-      </Suspense>
-
-      <OrbitControls
-        makeDefault
-        enableDamping
-        dampingFactor={0.07}
-        minDistance={8}
-        maxDistance={16}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2.35}
-        target={[0, 1.1, 0]}
-        enablePan={false}
+    <div className="relative h-full w-full">
+      <SceneLoadingOverlay
+        label={SCENE_LOADING_LABELS.hub}
+        visible={!ready}
       />
-    </Canvas>
+
+      <Canvas
+        shadows
+        dpr={[1, 2]}
+        className="h-full w-full"
+        onCreated={onGlCreated}
+        gl={{
+          antialias: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.05,
+        }}
+        camera={{ position: [0, 3.8, 10.5], fov: 38, near: 0.1, far: 100 }}
+      >
+        <color attach="background" args={["#eef1f5"]} />
+        <fog attach="fog" args={["#eef1f5", 16, 32]} />
+
+        <PerspectiveCamera makeDefault position={[0, 3.8, 10.5]} fov={38} />
+
+        <Suspense fallback={null}>
+          <Environment preset="city" environmentIntensity={0.35} />
+          <HubContent />
+          <SceneReadyMarker onReady={onSceneReady} />
+        </Suspense>
+
+        <OrbitControls
+          makeDefault
+          enableDamping
+          dampingFactor={0.07}
+          minDistance={8}
+          maxDistance={16}
+          minPolarAngle={Math.PI / 5}
+          maxPolarAngle={Math.PI / 2.35}
+          target={[0, 1.1, 0]}
+          enablePan={false}
+        />
+      </Canvas>
+    </div>
   );
 }
