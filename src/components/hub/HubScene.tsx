@@ -1,5 +1,6 @@
 "use client";
 
+import "@/lib/threeClockCompat";
 import { Canvas } from "@react-three/fiber";
 import {
   ContactShadows,
@@ -23,6 +24,15 @@ import {
 import { SceneReadyMarker } from "@/components/scene/SceneReadyMarker";
 import { useSceneReady } from "@/components/scene/useSceneReady";
 import { MiniAppTile } from "./MiniAppTile";
+
+/** มุมมองเริ่มต้น — ถอยห่างพอให้แผ่นทั้ง 3 มี margin รอบ viewport */
+const HUB_CAMERA = {
+  position: [0, 4.4, 15.2] as const,
+  fov: 34,
+  target: [0, 1.05, 0] as const,
+  minDistance: 12.5,
+  maxDistance: 19,
+};
 
 function HubPlatform({ width, depth }: { width: number; depth: number }) {
   return (
@@ -113,7 +123,7 @@ export function HubScene() {
       />
 
       <Canvas
-        shadows
+        shadows={{ type: THREE.PCFShadowMap }}
         dpr={[1, 2]}
         className="h-full w-full"
         onCreated={onGlCreated}
@@ -122,12 +132,21 @@ export function HubScene() {
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.05,
         }}
-        camera={{ position: [0, 3.8, 10.5], fov: 38, near: 0.1, far: 100 }}
+        camera={{
+          position: [...HUB_CAMERA.position],
+          fov: HUB_CAMERA.fov,
+          near: 0.1,
+          far: 100,
+        }}
       >
         <color attach="background" args={["#eef1f5"]} />
-        <fog attach="fog" args={["#eef1f5", 16, 32]} />
+        <fog attach="fog" args={["#eef1f5", 20, 38]} />
 
-        <PerspectiveCamera makeDefault position={[0, 3.8, 10.5]} fov={38} />
+        <PerspectiveCamera
+          makeDefault
+          position={[...HUB_CAMERA.position]}
+          fov={HUB_CAMERA.fov}
+        />
 
         <Suspense fallback={null}>
           <Environment preset="city" environmentIntensity={0.35} />
@@ -139,11 +158,11 @@ export function HubScene() {
           makeDefault
           enableDamping
           dampingFactor={0.07}
-          minDistance={8}
-          maxDistance={16}
+          minDistance={HUB_CAMERA.minDistance}
+          maxDistance={HUB_CAMERA.maxDistance}
           minPolarAngle={Math.PI / 5}
           maxPolarAngle={Math.PI / 2.35}
-          target={[0, 1.1, 0]}
+          target={[...HUB_CAMERA.target]}
           enablePan={false}
         />
       </Canvas>

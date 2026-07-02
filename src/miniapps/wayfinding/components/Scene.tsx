@@ -1,5 +1,6 @@
 "use client";
 
+import "@/lib/threeClockCompat";
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { Suspense } from "react";
